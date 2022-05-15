@@ -29,7 +29,27 @@ SynthDef("sine", {
 	sig = sig + (0.2*y*reverb);
     Out.ar(out, sig);
 }, [0.3, 2, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1]).add;
+
+(
+SynthDef("sunsetForest", {
+	arg amp = 1;
+	var a, out=0;
+	a=PinkNoise.ar(1!2);
+	50.do{
+		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
+		// a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).exprange(40,15000),exprand(0.1,2))
+	};
+	a=LPF.ar(a,1e5);
+	a=HPF.ar(a,30);
+	Out.ar(out, amp * a/2);
+}, [10]).add
 )
+)
+
+s = Synth("sunsetForest", [\amp, 0]);
+s.set(\amp, 1.2);
+s.set(\amp, 0);
+s.free;
 
 // livecoding
 (
@@ -40,9 +60,9 @@ y = Synth("sine", [\freq, 640.487/4, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibrat
 z = Synth("sine", [\freq, 659.255/8, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.9]);
 )
 (
-x.set(\amp, 0.12);
-y.set(\amp, 0.08);
-z.set(\amp, 0.1);
+x.set(\amp, 0.1);
+y.set(\amp, 0.06);
+z.set(\amp, 0.08);
 )
 (
 x.set(\amp, 0);
@@ -54,42 +74,3 @@ x.free;
 y.free;
 z.free;
 )
-x.set(\reverb, 0.9);
-x.set(\ice, 0.1);
-(
-x.set(\parFreq, 100);
-x.set(\pan2Freq, 100);
-)
-x.set(\pan2Freq, 164.814/8);
-x.set(\freq, 570.609);
-x.set(\vibratoDepth, 0.4);
-x.set(\vibratoFreq, 1);
-
-y.set(\pan2Freq, 7);
-y.set(\pan2Freq, 640.487/16);
-
-z.set(\reverb, 0.9);
-z.set(\ice, 0.7);
-z.set(\vibratoDepth, 0.9);
-z.set(\vibratoFreq, 3);
-z.set(\pan2Freq, 164.814);
-(
-z.set(\parFreq, 50);
-z.set(\pan2Freq, 50);
-)
-
-z.set(\pan2Freq, 164.814/16);
-z.set(\freq, 570.609); // CS
-z.set(\freq, 659.255/2); // E4
-z.set(\freq, 659.255); // E5
-z.set(\freq, 493.883); // B4
-z.set(\freq, 493.883*2); // B5
-z.set(\freq, 830.609/2); // G#4
-z.set(\freq, 830.609); // G#5
-z.set(\freq, 220); // A3
-z.set(\freq, 440); // A4
-z.set(\freq, 880); // A5
-z.set(\freq, 987.767); // B5
-z.set(\freq, 1318.510); // E6
-
-
