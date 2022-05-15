@@ -268,6 +268,22 @@ SynthDef(\insects, {arg out, pan=0, freq=110, sustain=1;
 	mod1 = (mod1 * 0.1)!2;
 	env = EnvGen.ar(Env.linen(0, 0, 1, 1, 10), timeScale: 1/f, doneAction:2);
 	OffsetOut.ar(out, DirtPan.ar(mod1, ~dirt.numChannels, pan, env));
-}).add
+}).add;
+
+SynthDef("higurashi", {
+	arg out, sustain=1, decay=0, pan=0, freq=110, accelerate=0, vibratoFreq=10, vibratoDepth=0;
+	var fglide, detune, sound, sig1, env, parFreq, freqDiffRate;
+	detune = 1.0;
+	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
+	freqDiffRate = 0.05;
+	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0.07, 0.3, 0.5, freq*freqDiffRate, -2), timeScale:sustain);
+	sig1 = Saw.ar([freq,freq]);
+	sig1 = sig1 + (PinkNoise.ar(1!2)/10);
+	sound = sig1 / 2;
+	parFreq = 1 + EnvGen.ar(Env.linen(0, 0, 0.6, 5, -2), timeScale:sustain);
+	sound = sound*LFPar.kr(parFreq); // tremoro
+	env = EnvGen.ar(Env.linen(0, 0, 0.6, 1, -2), timeScale:sustain, doneAction:2);
+	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
+}).add;
 
 )
