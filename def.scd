@@ -278,7 +278,7 @@ SynthDef("higurashi", {
 	freqDiffRate = 0.05;
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0.07, 0.3, 0.5, freq*freqDiffRate, -2), timeScale:sustain);
 	sig1 = Saw.ar([freq,freq]);
-	sig1 = sig1 + (PinkNoise.ar(1!2)/10);
+	sig1 = sig1 + (PinkNoise.ar(1!2)/15);
 	sound = sig1 / 2;
 	parFreq = 1 + EnvGen.ar(Env.linen(0, 0, 0.6, 5, -2), timeScale:sustain);
 	sound = sound*LFPar.kr(parFreq); // tremoro
