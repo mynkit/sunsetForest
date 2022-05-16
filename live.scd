@@ -37,17 +37,16 @@ SynthDef("sunsetForest", {
 	a=PinkNoise.ar(1!2);
 	50.do{
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
-		// a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).exprange(40,15000),exprand(0.1,2))
 	};
 	a=LPF.ar(a,1e5);
-	a=HPF.ar(a,30);
+	a=HPF.ar(a,150);
 	Out.ar(out, amp * a/2);
 }, [10]).add
 )
 )
 
 s = Synth("sunsetForest", [\amp, 0]);
-s.set(\amp, 1.2);
+s.set(\amp, 1.7);
 s.set(\amp, 0);
 s.free;
 
