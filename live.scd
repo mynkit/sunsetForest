@@ -32,22 +32,23 @@ SynthDef("sine", {
 
 (
 SynthDef("sunsetForest", {
-	arg amp = 1;
+	arg amp=1, strange=0;
 	var a, out=0;
 	a=PinkNoise.ar(1!2);
 	50.do{
-		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
+		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10+(30*strange),2500+(strange*12500)),Rand(0.9-(strange*0.8),1+(strange*1.0)))
 	};
 	a=LPF.ar(a,1e5);
-	a=HPF.ar(a,300);
+	a=HPF.ar(a,300-(strange*250));
 	Out.ar(out, amp * a/2);
-}, [10]).add
+}, [10, 6]).add
 )
 )
 
-s = Synth("sunsetForest", [\amp, 0]);
+s = Synth("sunsetForest", [\amp, 0, \strange, 0]);
 s.set(\amp, 1.8);
 s.set(\amp, 0);
+s.set(\strange, 0);
 s.free;
 
 // livecoding
