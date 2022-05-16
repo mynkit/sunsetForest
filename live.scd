@@ -39,14 +39,14 @@ SynthDef("sunsetForest", {
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
 	};
 	a=LPF.ar(a,1e5);
-	a=HPF.ar(a,150);
+	a=HPF.ar(a,300);
 	Out.ar(out, amp * a/2);
 }, [10]).add
 )
 )
 
 s = Synth("sunsetForest", [\amp, 0]);
-s.set(\amp, 1.7);
+s.set(\amp, 1.8);
 s.set(\amp, 0);
 s.free;
 
