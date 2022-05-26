@@ -286,4 +286,54 @@ SynthDef("higurashi", {
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
 
+SynthDef("rustling", {
+	arg out, sustain=1, pan;
+	var sig, grazing, pebble, branch, env, pitchShift;
+	env = EnvGen.ar(Env.linen(0.2, 0, 0.25, 1, -5), timeScale:sustain, doneAction:2);
+
+	pitchShift=[0.4,0.5,0.6,1.0].choose;
+	grazing=PinkNoise.ar(1);
+	grazing=if(
+		pitchShift==1.0,
+		grazing*0.85,
+		PitchShift.ar(grazing, 0.1, pitchShift, 0, 0);
+	);
+	grazing=LPF.ar(grazing,2000);
+	grazing=HPF.ar(grazing,8000);
+	grazing=grazing*3;
+
+	pebble=LPF.ar(GrayNoise.ar(1), 1000);
+	pebble=LPF.ar(pebble,3000);
+	pebble=HPF.ar(pebble,4000);
+	pebble=pebble*4;
+	pebble=pebble*(EnvGen.ar(Env.linen(sustain*0.6, 1, 0.1, 1)));
+
+	branch=BPF.ar(LPF.ar(WhiteNoise.ar(100), 7500), 1500);
+	branch = Mix.arFill(4, {arg i; branch * 0.5 * EnvGen.ar(Env.new([0,0,1,0],[0.005*(i**(0.clip(0,5)+1)),0,0.04]))});
+	branch=branch*(EnvGen.ar(Env.linen(0, 0, 0.2, 1, -10), timeScale:Rand(0.06,0.11)));
+	branch=DelayN.ar(branch, sustain, sustain*Rand(0.15,0.5));
+	branch=branch+((Rand(0.4,0.8))*DelayN.ar(branch, sustain, sustain*Rand(0.1,0.5)));
+	branch=LPF.ar(branch, Rand(3000,5000));
+	branch=branch+(0.1*FreeVerb.ar(branch, 1, 0.8, 0.2));
+	branch=branch*0.015;
+
+	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2));
+
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
+}).add;
+
+SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
+	var dt, n, freq, mul, t, u;
+	n = Rand(7, 46);
+	dt = 25.0 + Rand(-1.7, 1.7);
+	dt = dt + LFNoise2.kr(2, variation) * 0.001;
+	freq = 901 + Rand(0, 65);
+	t = Impulse.ar(dt.reciprocal, 0, 100);
+	mul = PulseCount.ar(t) < n;
+	u = BPF.ar(mul * t, freq, 0.1);
+	u = BPF.ar(u, freq, 0.2);
+	DetectSilence.ar(u, doneAction:2);
+	Out.ar(out, Pan2.ar(u, pan, amp));
+}).add;
+
 )
