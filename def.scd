@@ -271,17 +271,30 @@ SynthDef(\insects, {arg out, pan=0, freq=110, sustain=1;
 }).add;
 
 SynthDef("higurashi", {
-	arg out, sustain=1, decay=0, pan=0, freq=110, accelerate=0, vibratoFreq=10, vibratoDepth=0;
-	var fglide, detune, sound, sig1, env, parFreq, freqDiffRate;
+	arg out, sustain=1, decay=0, pan=0, accelerate=0;
+	var freq, fglide, detune, sound, sig1, env, parFreq, freqDiffRate, lpf, chain, vibratoFreq=8, vibratoDepth=0.4, real=0.4, imag=0;
 	detune = 1.0;
+	freq = 4186.009;
+	freq = freq - [10,-10,20,-20,0,0,100,234.943,234.943,456.699].choose;
 	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	freqDiffRate = 0.05;
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0.07, 0.3, 0.5, freq*freqDiffRate, -2), timeScale:sustain);
+	lpf = freq+Rand(1000, 3000);
+	freq = freq*(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	sig1 = Saw.ar([freq,freq]);
+	sig1 = sig1+0.2*Saw.ar([(freq*2),(freq*2)]);
+	sig1 = sig1+0.2*Saw.ar([(freq/2),(freq/2)]);
 	sig1 = sig1 + (PinkNoise.ar(1!2)/20);
+	sig1 = LPF.ar(sig1, lpf);
 	sound = sig1 / 2;
 	parFreq = 1 + EnvGen.ar(Env.linen(0, 0, 0.6, 5, -2), timeScale:sustain);
 	sound = sound*LFPar.kr(parFreq); // tremoro
+	// spectral-conformer
+	chain = sound.asArray.collect { |x| FFT(LocalBuf(2048), x) };
+	sound = IFFT(
+				PV_ConformalMap(chain, real.linlin(0.0,1.0,0.01,2.0), imag.linlin(0.00,1.0,0.01,10.0))
+			).tanh;
+
 	env = EnvGen.ar(Env.linen(0, 0, 0.6, 1, -2), timeScale:sustain, doneAction:2);
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
@@ -324,18 +337,18 @@ SynthDef("rustling", {
 	branch = Mix.arFill(4, {arg i; branch * 0.5 * EnvGen.ar(Env.new([0,0,1,0],[0.005*(i**(0.clip(0,5)+1)),0,0.04]))});
 	branch=branch*(EnvGen.ar(Env.linen(0, 0, 0.2, 1, -10), timeScale:Rand(0.06,0.11)));
 	branch=DelayN.ar(branch, sustain, sustain*Rand(0.15,0.5));
-	branch=branch+((Rand(0.4,0.8))*DelayN.ar(branch, sustain, sustain*Rand(0.1,0.5)));
+	branch=branch+((Rand(0.4,0.8))*DelayN.ar(branch, sustain, sustain*Rand(0.1,0.7)));
 	branch=LPF.ar(branch, Rand(3000,5000));
 	branch=branch+(0.1*FreeVerb.ar(branch, 1, 0.8, 0.2));
-	branch=branch*0.015;
+	branch=branch*0.017;
 
 	footsteps=SinOsc.ar([65.406,69.296]).dup;
 	footsteps=HPF.ar(footsteps, 300);
 	footsteps=footsteps*(EnvGen.ar(Env.linen(0, 0, 0.2, 1, -5), timeScale:Rand(0.1,0.2)));
 	footsteps=DelayN.ar(footsteps, sustain, sustain*0.1);
-	footsteps=footsteps*0.2;
+	footsteps=footsteps*0.12;
 
-	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*(Rand(0.5,1.0)**2));
+	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*Rand(0.95,1.0));
 
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
 }).add;
