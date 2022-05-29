@@ -286,9 +286,21 @@ SynthDef("higurashi", {
 	OffsetOut.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env));
 }).add;
 
+SynthDef(\branch, {|out, rate=1, sustain=1, pan, n, delay=1, pitch1=1 |
+	var env, sound;
+	var spr = 0.005 * delay;
+	env = EnvGen.ar(Env.linen(0, 0, 0.2, 1, -10), timeScale:Rand(0.03,0.11), doneAction:2);
+	sound = BPF.ar(LPF.ar(WhiteNoise.ar(1), 7500*pitch1), 1500*pitch1);
+	sound = Mix.arFill(4, {arg i; sound * 0.5 * EnvGen.ar(Env.new([0,0,1,0],[spr*(i**(0.clip(0,5)+1)),0,0.04/rate]))});
+	sound=sound+((Rand(0.4,0.8))*DelayN.ar(sound, sustain, sustain*Rand(0.05,0.2)));
+	sound=LPF.ar(sound, Rand(1000,4000));
+	sound=sound+(0.1*FreeVerb.ar(sound, 1, 0.8, 0.2));
+		Out.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env))
+}).add;
+
 SynthDef("rustling", {
 	arg out, sustain=1, pan;
-	var sig, grazing, pebble, branch, env, pitchShift;
+	var sig, grazing, pebble, branch, footsteps, env, pitchShift;
 	env = EnvGen.ar(Env.linen(0.2, 0, 0.25, 1, -5), timeScale:sustain, doneAction:2);
 
 	pitchShift=[0.4,0.5,0.6,1.0].choose;
@@ -317,7 +329,13 @@ SynthDef("rustling", {
 	branch=branch+(0.1*FreeVerb.ar(branch, 1, 0.8, 0.2));
 	branch=branch*0.015;
 
-	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2));
+	footsteps=SinOsc.ar([65.406,69.296]).dup;
+	footsteps=HPF.ar(footsteps, 300);
+	footsteps=footsteps*(EnvGen.ar(Env.linen(0, 0, 0.2, 1, -5), timeScale:Rand(0.1,0.2)));
+	footsteps=DelayN.ar(footsteps, sustain, sustain*0.1);
+	footsteps=footsteps*0.2;
+
+	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*(Rand(0.5,1.0)**2));
 
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
 }).add;
