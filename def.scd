@@ -271,18 +271,18 @@ SynthDef(\insects, {arg out, pan=0, freq=110, sustain=1;
 }).add;
 
 SynthDef("higurashi", {
-	arg out, sustain=1, decay=0, pan=0, accelerate=0;
+	arg out, sustain=1, decay=0, pan=0, accelerate=0, slide=0;
 	var freq, fglide, detune, sound, sig1, env, parFreq, freqDiffRate, lpf, chain, vibratoFreq=8, vibratoDepth=0.4, real=0.4, imag=0;
 	detune = 1.0;
 	freq = 4186.009;
-	freq = freq - [10,-10,20,-20,0,0,100,234.943,234.943,456.699].choose;
+	freq = freq - (456.699*slide);
 	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	freqDiffRate = 0.05;
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0.07, 0.3, 0.5, freq*freqDiffRate, -2), timeScale:sustain);
 	lpf = freq+Rand(1000, 3000);
 	freq = freq*(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	sig1 = Saw.ar([freq,freq]);
-	sig1 = sig1+0.2*Saw.ar([(freq*2),(freq*2)]);
+	sig1 = sig1+0.5*Saw.ar([(freq*2),(freq*2)]);
 	sig1 = sig1+0.2*Saw.ar([(freq/2),(freq/2)]);
 	sig1 = sig1 + (PinkNoise.ar(1!2)/20);
 	sig1 = LPF.ar(sig1, lpf);
@@ -308,7 +308,8 @@ SynthDef(\branch, {|out, rate=1, sustain=1, pan, n, delay=1, pitch1=1 |
 	sound=sound+((Rand(0.4,0.8))*DelayN.ar(sound, sustain, sustain*Rand(0.05,0.2)));
 	sound=LPF.ar(sound, Rand(1000,4000));
 	sound=sound+(0.1*FreeVerb.ar(sound, 1, 0.8, 0.2));
-		Out.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env))
+	sound=sound*10;
+	Out.ar(out, DirtPan.ar(sound, ~dirt.numChannels, pan, env))
 }).add;
 
 SynthDef("rustling", {
@@ -349,6 +350,7 @@ SynthDef("rustling", {
 	footsteps=footsteps*0.12;
 
 	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*Rand(0.95,1.0));
+	sig=sig*10;
 
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
 }).add;
@@ -363,8 +365,49 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 	mul = PulseCount.ar(t) < n;
 	u = BPF.ar(mul * t, freq, 0.1);
 	u = BPF.ar(u, freq, 0.2);
+	u = u * 5;
 	DetectSilence.ar(u, doneAction:2);
 	Out.ar(out, Pan2.ar(u, pan, amp));
+}).add;
+
+SynthDef(\intimidatingCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
+	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=50, vibratoDepth=2, freqDiffRate=0.25, real=0.5, imag=0;
+	env = EnvGen.ar(Env.linen(0.0, 0, 1, 1, 5), timeScale: sustain, doneAction:2);
+	// n = Rand(40, 46);
+	n = 45;
+	// dt = 25.0 + Rand(-1.7, 1.7);
+	dt = 25;
+	dt = dt + LFNoise2.kr(2, variation) * 0.0006;
+	freq = 1244.508 + Rand(0, 323.474);
+	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 5), timeScale:sustain);
+	t = Impulse.ar(dt.reciprocal, 0, 100);
+	mul = PulseCount.ar(t) < n;
+	u = BPF.ar(mul * t, freq, 0.1);
+	u = BPF.ar(u, freq, 0.4);
+	u = HPF.ar(u, 6000);
+	u = LPF.ar(u, 2000);
+	// spectral-conformer
+	chain = u.asArray.collect { |x| FFT(LocalBuf(2048), x) };
+	u = IFFT(
+				PV_ConformalMap(chain, real.linlin(0.0,1.0,0.01,2.0), imag.linlin(0.00,1.0,0.01,10.0))
+			).tanh;
+	u = u*10;
+	OffsetOut.ar(out, DirtPan.ar(u, ~dirt.numChannels, pan, env));
+}).add;
+
+SynthDef(\owl, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
+	var freq, u, chain, env, vibratoFreq=50, vibratoDepth=2, freqDiffRate=0.2, real=0.5, imag=0;
+	env = EnvGen.ar(Env.linen(0.0, 0, 1, 1, 5), timeScale: sustain, doneAction:2);
+	freq = 1244.508 + Rand(0, 323.474);
+	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 5), timeScale:sustain);
+	u = SinOsc.ar(freq/4);
+	// spectral-conformer
+	chain = u.asArray.collect { |x| FFT(LocalBuf(2048), x) };
+	u = IFFT(
+				PV_ConformalMap(chain, real.linlin(0.0,1.0,0.01,2.0), imag.linlin(0.00,1.0,0.01,10.0))
+			).tanh;
+	u = LPF.ar(u, 400);
+	OffsetOut.ar(out, DirtPan.ar(u, ~dirt.numChannels, pan, env));
 }).add;
 
 )

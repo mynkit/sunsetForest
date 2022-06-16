@@ -46,23 +46,26 @@ SynthDef("sunsetForest", {
 )
 
 s = Synth("sunsetForest", [\amp, 0, \strange, 0]);
-s.set(\amp, 1.8);
+s.set(\amp, 9);
 s.set(\amp, 0);
 s.set(\strange, 0);
 s.free;
 
 // livecoding
 (
-// cs
 x = Synth("sine", [\freq, 570.609/4, \amp, 0, \parFreq, 1, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.6]);
-// ef
 y = Synth("sine", [\freq, 640.487/4, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.4]);
 z = Synth("sine", [\freq, 659.255/8, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.9]);
 )
 (
-x.set(\amp, 0.1);
-y.set(\amp, 0.06);
-z.set(\amp, 0.08);
+x.set(\amp, 0.03);
+y.set(\amp, 0.03);
+z.set(\amp, 0.04);
+)
+(
+x.set(\pan2Freq, 110);
+y.set(\pan2Freq, 40);
+z.set(\pan2Freq, 70);
 )
 (
 x.set(\amp, 0);
@@ -74,3 +77,28 @@ x.free;
 y.free;
 z.free;
 )
+
+
+Ndef(\fire).play;
+Ndef(\fire).fadeTime = 10;
+Ndef(\fire).stop;
+Ndef(\fire).clear;
+(
+Ndef(\fire,{|amp = 1.1, freq = 1, lpf = 6000, hpf = 100|
+	x=DelayL.ar(n=Ndef(\fire);n.ar,2,LFNoise0.kr(3.5*_!4)+1)+Blip.ar(freq);
+	amp*LeakDC.ar(HPF.ar(LPF.ar(x+x.mean*0.15,lpf), hpf)).sin;
+});
+)
+Ndef(\fire).set(\amp, 1.1, \freq, 1, \lpf, 6000, \hpf, 100);
+Ndef(\fire).set(\amp, 1, \freq, 0.55, \lpf, 4000, \hpf, 50);
+Ndef(\fire).set(\amp, 1, \freq, 0.6, \lpf, 4000, \hpf, 100);
+
+
+(
+{
+	p=PinkNoise.ar(1!2);
+	BRF.ar(p+Blip.ar(p+2,400),150,2,0.1)*0.5;
+	// BRF.ar(p,150,2,0.1)*2;
+}.play
+)
+
