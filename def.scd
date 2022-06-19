@@ -370,6 +370,25 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 	Out.ar(out, Pan2.ar(u, pan, amp));
 }).add;
 
+// ハシブトガラス
+SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
+	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=50, vibratoDepth=2, freqDiffRate=0.1, real=0.5, imag=0;
+	env = EnvGen.ar(Env.linen(0.01, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
+	// freq = 995.6064 + Rand(0, 30);
+	freq = 1000 + Rand(0, 10);
+	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 7), timeScale:sustain);
+	u = 0;
+	u = u + (SinOsc.ar(freq*2) * 0.15);
+	u = u + (SinOsc.ar(freq*1.95) * 0.05);
+	u = u + (SinOsc.ar(freq*1.5) * 0.11);
+	u = u + (SinOsc.ar(freq*1.45) * 0.06);
+	u = u + (SinOsc.ar(freq*1.04) * 0.05);
+	u = u + (SinOsc.ar(freq*1) * 0.09);
+	u = LPF.ar(u, 1000);
+	OffsetOut.ar(out, DirtPan.ar(u, ~dirt.numChannels, pan, env));
+}).add;
+
+// ハシボソガラス
 SynthDef(\carrionCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
 	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=50, vibratoDepth=2, freqDiffRate=0.25, real=0.5, imag=0;
 	env = EnvGen.ar(Env.linen(0.0, 0, 1, 1, 5), timeScale: sustain, doneAction:2);
