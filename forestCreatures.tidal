@@ -8,9 +8,9 @@ all $ (|+ n (0)).(|* gain 1.5)
 -- walk
 do
   let
-    distance = (range 0.5 1.5 sine)
+    distance = (range 0.5 2 sine)
   d10
-    $ (|* gain (range 0.8 1 (slow 10 rand)))
+    $ (|* gain (range 0.7 1 (slow 10 rand)))
     $ slow 4.75
     $ degradeBy 0.6
     $ fast 20
@@ -25,7 +25,7 @@ d9
   $ s "branch"
   # gain (range 0.0 0.4 ((fast 17 rand)**2))
   # theta (range (-1) 1 (fast 30 rand))
-  # room 0.2
+  # room 0.05
 
 -- intimidatingCrow
 d6
@@ -42,16 +42,16 @@ d6
 d5
   $ degradeBy 0.7
   $ s "frog" # gain (range 0.1 0.25 (fast 31 rand))
-  # theta (range 0.4 0.7 (fast 17 rand))
+  # theta (range 0.35 0.5 (fast 17 rand))
   # room 0.05
 
 -- higurashi
 d4
-  $ degradeBy 0.8
+  $ degradeBy 0.7
   $ s " ~!3 higurashi ~!4" # sustain (range 8 12 (fast 15 $ rand))
   # theta (range (-0.3) (0.3) (fast 12 $ rand))
   # freeverb 0.6 # size 0.8 # room 0.6
-  # gain (range 0.2 0.5 (fast 13 $ (rand*rand)))
+  # gain (range 0.2 0.4 (fast 13 $ (rand*rand)))
   # slide (slow 3 $ sine)
 
 -- bird
@@ -73,7 +73,7 @@ d3
   # gain (range 0.4 0.6 sine)
   # theta (range (0.2) (0) (fast 15 $ rand))
   # phi (range (-0.5) (0.5) (fast 7 $ rand))
-  # freeverb 0.3 # size 0.7
+  # freeverb 0.1 # size 0.7
 
 -- insects
 d2
