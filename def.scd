@@ -370,7 +370,7 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 	Out.ar(out, Pan2.ar(u, pan, amp));
 }).add;
 
-SynthDef(\intimidatingCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
+SynthDef(\carrionCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
 	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=50, vibratoDepth=2, freqDiffRate=0.25, real=0.5, imag=0;
 	env = EnvGen.ar(Env.linen(0.0, 0, 1, 1, 5), timeScale: sustain, doneAction:2);
 	// n = Rand(40, 46);

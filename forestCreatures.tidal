@@ -5,6 +5,16 @@ setcps (bpm/60/4)
 all $ (|+ n (0)).(|* gain 1.5)
 
 
+-- intimidatingCrow
+once
+  $ (|* gain 1.3)
+  $ stack[
+  s "jungleCrow" # gain 0.3
+  ]
+  # sustain 0.6
+  -- # room 0.4 # size 0.2
+  # theta (-0.4)
+
 -- walk
 do
   let
@@ -31,7 +41,7 @@ d9
 d6
   $ slow 5
   $ degradeBy 0.2
-  $ s "intimidatingCrow!3 ~!15"
+  $ s "carrionCrow!3 ~!15"
   # sustain (range 0.6 0.9 rand)
   # gain (range 0.4 0.5 rand)
   # room 0.4 # size 0.9
