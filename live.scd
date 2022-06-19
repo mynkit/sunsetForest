@@ -35,47 +35,53 @@ SynthDef("sunsetForest", {
 	arg amp=1, strange=0;
 	var a, out=0;
 	a=PinkNoise.ar(1!2);
-	50.do{
+	75.do{
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10+(30*strange),2500+(strange*12500)),Rand(0.9-(strange*0.8),1+(strange*1.0)))
 	};
 	a=LPF.ar(a,1e5);
-	a=HPF.ar(a,300-(strange*250));
-	Out.ar(out, amp * a/2);
+	a=HPF.ar(a,300);
+	// Out.ar(out, amp * a * 4);
+	Out.ar(out, amp * BPF.ar(a,1400) * 30);
 }, [10, 6]).add
 )
 )
 
 s = Synth("sunsetForest", [\amp, 0, \strange, 0]);
-s.set(\amp, 9);
+s.set(\amp, 2.0);
 s.set(\amp, 0);
 s.set(\strange, 0);
 s.free;
 
 // livecoding
 (
-x = Synth("sine", [\freq, 570.609/4, \amp, 0, \parFreq, 1, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.6]);
-y = Synth("sine", [\freq, 640.487/4, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.4]);
-z = Synth("sine", [\freq, 659.255/8, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.9]);
+a = Synth("sine", [\freq, 570.609/4, \amp, 0, \parFreq, 1, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.6]);
+b = Synth("sine", [\freq, 640.487/4, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.4]);
+c = Synth("sine", [\freq, 659.255/8, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.9]);
 )
 (
-x.set(\amp, 0.03);
-y.set(\amp, 0.03);
-z.set(\amp, 0.04);
+a.set(\amp, 0.03);
+b.set(\amp, 0.04);
+c.set(\amp, 0.05);
 )
 (
-x.set(\pan2Freq, 110);
-y.set(\pan2Freq, 40);
-z.set(\pan2Freq, 70);
+a.set(\pan2Freq, 110);
+b.set(\pan2Freq, 130);
+c.set(\pan2Freq, 80);
 )
 (
-x.set(\amp, 0);
-y.set(\amp, 0);
-z.set(\amp, 0);
+a.set(\ice, 0.3);
+b.set(\ice, 0.2);
+c.set(\ice, 0.2);
 )
 (
-x.free;
-y.free;
-z.free;
+a.set(\amp, 0);
+b.set(\amp, 0);
+c.set(\amp, 0);
+)
+(
+a.free;
+b.free;
+c.free;
 )
 
 
@@ -84,21 +90,27 @@ Ndef(\fire).fadeTime = 10;
 Ndef(\fire).stop;
 Ndef(\fire).clear;
 (
-Ndef(\fire,{|amp = 1.1, freq = 1, lpf = 6000, hpf = 100|
+Ndef(\fire,{|amp = 1.75, freq = 1, lpf = 6000, hpf = 100|
 	x=DelayL.ar(n=Ndef(\fire);n.ar,2,LFNoise0.kr(3.5*_!4)+1)+Blip.ar(freq);
 	amp*LeakDC.ar(HPF.ar(LPF.ar(x+x.mean*0.15,lpf), hpf)).sin;
 });
 )
-Ndef(\fire).set(\amp, 1.1, \freq, 1, \lpf, 6000, \hpf, 100);
+Ndef(\fire).set(\amp, 1.75, \freq, 1, \lpf, 6000, \hpf, 100);
 Ndef(\fire).set(\amp, 1, \freq, 0.55, \lpf, 4000, \hpf, 50);
-Ndef(\fire).set(\amp, 1, \freq, 0.6, \lpf, 4000, \hpf, 100);
+Ndef(\fire).set(\amp, 0, \freq, 0.6, \lpf, 4000, \hpf, 100);
 
 
 (
 {
 	p=PinkNoise.ar(1!2);
-	BRF.ar(p+Blip.ar(p+2,400),150,2,0.1)*0.5;
-	// BRF.ar(p,150,2,0.1)*2;
+	BRF.ar(p+Blip.ar(p+2,400),150,2,0.1)*5;
+}.play
+)
+
+(
+{
+	p=PinkNoise.ar(1!2);
+	p*0.02
 }.play
 )
 
