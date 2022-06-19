@@ -388,9 +388,11 @@ SynthDef(\intimidatingCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
 	u = LPF.ar(u, 2000);
 	// spectral-conformer
 	chain = u.asArray.collect { |x| FFT(LocalBuf(2048), x) };
-	u = IFFT(
+	2.do{
+		u = IFFT(
 				PV_ConformalMap(chain, real.linlin(0.0,1.0,0.01,2.0), imag.linlin(0.00,1.0,0.01,10.0))
 			).tanh;
+	};
 	u = u*10;
 	OffsetOut.ar(out, DirtPan.ar(u, ~dirt.numChannels, pan, env));
 }).add;
