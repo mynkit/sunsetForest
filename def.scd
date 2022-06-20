@@ -357,7 +357,7 @@ SynthDef("rustling", {
 
 SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 	var dt, n, freq, mul, t, u;
-	n = Rand(7, 46);
+	n = Rand(7, 35);
 	dt = 25.0 + Rand(-1.7, 1.7);
 	dt = dt + LFNoise2.kr(2, variation) * 0.001;
 	freq = 901 + Rand(0, 65);
@@ -371,7 +371,7 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 }).add;
 
 // ハシブトガラス
-SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1, vibratoDepth=2;
+SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1, vibratoDepth=0;
 	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=70, freqDiffRate=0.1, real=0.5, imag=0;
 	env = EnvGen.ar(Env.linen(0.01, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
 	freq = 1000 + Rand(0, 10);
@@ -397,7 +397,8 @@ SynthDef(\carrionCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1;
 	// dt = 25.0 + Rand(-1.7, 1.7);
 	dt = 25;
 	dt = dt + LFNoise2.kr(2, variation) * 0.0006;
-	freq = 1244.508 + Rand(0, 323.474);
+	// freq = 1244.508 + Rand(0, 323.474);
+	freq = 1244.508;
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 5), timeScale:sustain);
 	t = Impulse.ar(dt.reciprocal, 0, 100);
 	mul = PulseCount.ar(t) < n;
