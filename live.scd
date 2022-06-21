@@ -38,11 +38,9 @@ SynthDef("sunsetForest", {
 	75.do{
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10+(30*strange),2500+(strange*12500)),Rand(0.9-(strange*0.8),1+(strange*1.0)))
 	};
-	// a=LPF.ar(a,1e5);
 	a=LPF.ar(a,8000);
 	a=HPF.ar(a,700);
 	Out.ar(out, amp * a * 5);
-	// Out.ar(out, amp * BPF.ar(a,1400) * 30);
 }, [10, 6]).add
 )
 )
