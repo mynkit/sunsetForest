@@ -38,10 +38,11 @@ SynthDef("sunsetForest", {
 	75.do{
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10+(30*strange),2500+(strange*12500)),Rand(0.9-(strange*0.8),1+(strange*1.0)))
 	};
-	a=LPF.ar(a,1e5);
-	a=HPF.ar(a,300);
-	// Out.ar(out, amp * a * 4);
-	Out.ar(out, amp * BPF.ar(a,1400) * 30);
+	// a=LPF.ar(a,1e5);
+	a=LPF.ar(a,8000);
+	a=HPF.ar(a,700);
+	Out.ar(out, amp * a * 5);
+	// Out.ar(out, amp * BPF.ar(a,1400) * 30);
 }, [10, 6]).add
 )
 )
@@ -64,8 +65,8 @@ b.set(\amp, 0.04);
 c.set(\amp, 0.05);
 )
 (
-a.set(\pan2Freq, 110);
-b.set(\pan2Freq, 130);
+a.set(\pan2Freq, 80);
+b.set(\pan2Freq, 100);
 c.set(\pan2Freq, 80);
 )
 (
@@ -99,18 +100,22 @@ Ndef(\fire).set(\amp, 1.75, \freq, 1, \lpf, 6000, \hpf, 100);
 Ndef(\fire).set(\amp, 1, \freq, 0.55, \lpf, 4000, \hpf, 50);
 Ndef(\fire).set(\amp, 0, \freq, 0.6, \lpf, 4000, \hpf, 100);
 
-
+Ndef(\river).play;
+Ndef(\river).fadeTime = 10;
+Ndef(\river).stop;
+Ndef(\river).clear;
 (
-{
+Ndef(\river,{|amp = 0|
 	p=PinkNoise.ar(1!2);
-	BRF.ar(p+Blip.ar(p+2,400),150,2,0.1)*5;
-}.play
+	BRF.ar(p+Blip.ar(p+2,400),150,2,0.1)*5*amp;
+});
 )
+Ndef(\river).set(\amp, 0);
 
 (
 {
 	p=PinkNoise.ar(1!2);
-	p*0.02
+	p*0.03
 }.play
 )
 
