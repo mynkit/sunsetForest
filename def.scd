@@ -347,9 +347,9 @@ SynthDef("rustling", {
 	footsteps=HPF.ar(footsteps, 300);
 	footsteps=footsteps*(EnvGen.ar(Env.linen(0, 0, 0.2, 1, -5), timeScale:Rand(0.1,0.2)));
 	footsteps=DelayN.ar(footsteps, sustain, sustain*0.1);
-	footsteps=footsteps*0.12;
+	footsteps=footsteps*0.29;
 
-	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*Rand(0.95,1.0));
+	sig=(grazing*(Rand(0.0,1.0)))+(pebble*Rand(0.5,1.0))+(branch*(Rand(0.0,1.0)**2))+(footsteps*Rand(0.5,1.0));
 	sig=sig*10;
 
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
@@ -373,7 +373,7 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 // ハシブトガラス
 SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1, vibratoDepth=0;
 	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=70, freqDiffRate=0.1, real=0.5, imag=0;
-	env = EnvGen.ar(Env.linen(0.007, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
+	env = EnvGen.ar(Env.linen(0.009, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
 	freq = 1000 + Rand(0, 10);
 	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 7), timeScale:sustain);
@@ -384,7 +384,6 @@ SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1, vibra
 	u = u + (SinOsc.ar(freq*1.45) * 0.09);
 	u = u + (SinOsc.ar(freq*1.04) * 0.07);
 	u = u + (SinOsc.ar(freq*1) * 0.09);
-	// u = LPF.ar(u, 2000);
 	OffsetOut.ar(out, DirtPan.ar(u, ~dirt.numChannels, pan, env));
 }).add;
 
