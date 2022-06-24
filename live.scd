@@ -36,10 +36,10 @@ SynthDef("sunsetForest", {
 	var a, out=0;
 	a=PinkNoise.ar(1!2);
 	75.do{
-		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10+(30*strange),2500+(strange*12500)),Rand(0.9-(strange*0.8),1+(strange*1.0)))
+		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
 	};
-	a=LPF.ar(a,8000);
-	a=HPF.ar(a,700);
+	a=LPF.ar(a,7900);
+	a=HPF.ar(a,750-(strange*500));
 	Out.ar(out, amp * a * 5);
 }, [10, 6]).add
 )
@@ -113,7 +113,7 @@ Ndef(\river).set(\amp, 0);
 (
 {
 	p=PinkNoise.ar(1!2);
-	p*0.03
+	p*0.01
 }.play
 )
 
