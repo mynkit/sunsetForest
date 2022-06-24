@@ -373,7 +373,7 @@ SynthDef("frog", { arg out, pan=0, amp=0.1, variation=0.9;
 // ハシブトガラス
 SynthDef(\jungleCrow, { arg out, pan=0, amp=0.1, variation=0.9, sustain=1, vibratoDepth=0;
 	var dt, n, freq, mul, t, u, chain, env, vibratoFreq=70, freqDiffRate=0.1, real=0.5, imag=0;
-	env = EnvGen.ar(Env.linen(0.012, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
+	env = EnvGen.ar(Env.linen(0.04, 0, 1, 1, 8), timeScale: sustain, doneAction:2);
 	freq = 1000 + Rand(0, 10);
 	freq = freq *(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50)));
 	freq = freq*(1-freqDiffRate) + EnvGen.ar(Env.linen(0, 0, 1, freq*freqDiffRate, 7), timeScale:sustain);
