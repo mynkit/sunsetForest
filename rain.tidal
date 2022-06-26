@@ -1,5 +1,6 @@
 -- runnning water
 d10
+  $ (|* gain 0.5)
   $ sometimesBy 0.7 (degradeBy 1)
   $ sometimesBy 0.2 (0.0005 ~>)
   $ sometimesBy 0.4 (0.001 ~>)
