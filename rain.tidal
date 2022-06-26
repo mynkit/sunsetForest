@@ -1,26 +1,27 @@
 
 do
   let
-    amp = 1
+    rainfall = 1
   -- runnning water
   d10
-    $ (|* gain (amp*1.05))
-    $ sometimesBy 0.7 (degradeBy 1)
+    $ (|* gain (sqrt(rainfall)))
+    $ fast ((10*rainfall+1)/10)
+    $ sometimesBy 0.8 (degradeBy 1)
     $ sometimesBy 0.2 (0.0005 ~>)
     $ sometimesBy 0.4 (0.001 ~>)
     $ sometimesBy 0.2 (0.0015 ~>)
     $ (|* gain (range 1.2 0.3 (rand*rand)))
-    $ s "[SinOscSynthBend?]*520"
+    $ s "[SinOscSynthBend?]*550"
     # sustain (range 0.001 0.1 (rand*rand))
     # accelerate (range 0 1 (rand*rand))
-    # n (range 40 10 (rand*rand))
+    # n (range 40 5 (rand*rand))
     # theta (range (-0.3) (-0.9) (fast 49 rand))
     # gain (range 0.1 0.4 (fast 16 rand))
     # lpf 1500
   -- rain hitting
   d9
-    $ (|* gain amp)
-    $ fast (range 20 50 (fast 23 rand))
+    $ (|* gain (sqrt(rainfall)))
+    $ fast (range (rainfall*20+2) (rainfall*50+5) (fast 23 rand))
     $ s "branch"
     # gain (range 0.0 0.4 ((fast 17 rand)**2))
     # theta (range (-1) 1 (fast 30 rand))
