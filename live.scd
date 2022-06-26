@@ -30,26 +30,40 @@ SynthDef("sine", {
     Out.ar(out, sig);
 }, [0.3, 2, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 1]).add;
 
-(
 SynthDef("sunsetForest", {
-	arg amp=1, strange=0;
+	arg amp=1, groundNoise=0;
 	var a, out=0;
 	a=PinkNoise.ar(1!2);
 	75.do{
 		a=BBandStop.ar(a,LFNoise1.kr(0.01.rand).range(10,2500),Rand(0.9,1))
 	};
-	a=LPF.ar(a,7900);
-	a=HPF.ar(a,750-(strange*500));
+	a=LPF.ar(a,7800);
+	a=HPF.ar(a,1100-(groundNoise*1000));
 	Out.ar(out, amp * a * 5);
-}, [10, 6]).add
-)
+}, [10, 6]).add;
+
+SynthDef(\rain, {
+	arg amp=1;
+    var sig, out=0;
+    sig = { TRand.ar(-1, 1, Dust.ar(25000)) } ! 2;
+	sig = BPF.ar(sig, 100, 0.5);
+	sig = HPF.ar(sig, 6000);
+	sig = LPF.ar(sig, 5000);
+	sig = sig*10*amp;
+	Out.ar(out, sig);
+}, [10]).add;
 )
 
-s = Synth("sunsetForest", [\amp, 0, \strange, 0]);
-s.set(\amp, 2.0);
+s = Synth("sunsetForest", [\amp, 0, \groundNoise, 0]);
+s.set(\amp, 2.5);
 s.set(\amp, 0);
-s.set(\strange, 0);
+s.set(\groundNoise, 0);
 s.free;
+
+r = Synth("rain", [\amp, 0]);
+r.set(\amp, 0.9);
+r.set(\amp, 0);
+r.free;
 
 // livecoding
 (
