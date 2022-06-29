@@ -59,7 +59,7 @@ do
     # lpf 1500
     ]
   d9
-    $ capply' (\x -> if x < 0.9 then 1 else 0) (cF 0 "forest") (const $ s "~")
+    $ capply' (\x -> if x < 1 then 1 else 0) (cF 0 "forest") (const $ s "~")
     $ stack[
     -- branch breaking
     fast (range 1 10 (fast 23 rand))
