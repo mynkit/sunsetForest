@@ -15,7 +15,7 @@ do
     # sustain (range 0.001 0.1 (rand*rand))
     # accelerate (range 0 1 (rand*rand))
     # n (range 40 5 (rand*rand))
-    # theta (range (-0.3) (-0.9) (fast 49 rand))
+    # theta (range (-0.3) (-0.9) (fast 49 rand ))
     # gain (range 0.1 0.4 (fast 16 rand))
     # lpf 1500
   -- rain hitting
