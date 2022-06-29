@@ -40,7 +40,7 @@ SynthDef("sunsetForest", {
 	a=LPF.ar(a,7800);
 	a=HPF.ar(a,1500-(groundNoise*1400));
 	Out.ar(out, amp * a * 5);
-}, [10, 6]).add;
+}, [30, 30]).add;
 
 SynthDef(\rain, {
 	arg amp=1;
@@ -55,14 +55,22 @@ SynthDef(\rain, {
 )
 
 s = Synth("sunsetForest", [\amp, 0, \groundNoise, 0]);
-s.set(\amp, 2.5);
+s.set(\amp, 2.0);
 s.set(\amp, 0);
 s.set(\groundNoise, 0);
 s.free;
 
 r = Synth("rain", [\amp, 0]);
-r.set(\amp, 0.9);
+r.set(\amp, 1);
+(
+var osc = NetAddr.new("localhost", 6060);
+osc.sendMsg("/ctrl", "rainfall", 1);
+)
 r.set(\amp, 0);
+(
+var osc = NetAddr.new("localhost", 6060);
+osc.sendMsg("/ctrl", "rainfall", 0);
+)
 r.free;
 
 // livecoding
