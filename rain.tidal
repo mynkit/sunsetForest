@@ -2,6 +2,7 @@
 do
   let
     rainfall = 1
+    pond = 1
   -- runnning water
   d10
     $ (|* gain (sqrt(rainfall)))
@@ -26,3 +27,19 @@ do
     # gain (range 0.0 0.4 ((fast 17 rand)**2))
     # theta (range (-1) 1 (fast 30 rand))
     # room 0.05
+  -- rain falling on a pond
+  d11
+    $ (|* gain (sqrt(pond)))
+    $ sometimesBy 0.7 (degradeBy 1)
+    $ sometimesBy 0.2 (0.0005 ~>)
+    $ sometimesBy 0.4 (0.001 ~>)
+    $ sometimesBy 0.2 (0.0015 ~>)
+    $ sometimesBy 0.2 (|+ n 10)
+    $ (|* gain (range 1.6 0.8 (rand*rand)))
+    $ s "[SinOscSynthBend?]*400"
+    # sustain (range 0.001 0.05 (rand*rand))
+    # accelerate (range 0.1 3 (rand*rand))
+    # n (range 50 (15) (rand*rand))
+    # theta (range (-1) 1 (fast 37 rand))
+    # gain (range 0.2 0.4 (fast 15 rand))
+    # hpf 1500 # lpf 8000
