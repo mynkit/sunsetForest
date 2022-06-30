@@ -4,6 +4,7 @@ setcps (bpm/60/4)
 
 do
   setF "forest" 0
+  setF "groundNoise" 0
   setF "rainfall" 0
   setF "pond" 0
 
@@ -98,15 +99,16 @@ do
     # room 0.5 # size 0.9 # freeverb 0.8
     # theta (range (0.05) (-0.2) sine)
     # lpf 210
-    # vibratoDepth 0
+    # vibratoDepth (cF 0 "groundNoise")
     # gain (cF 0 "forest")
   -- frog
   d5
     $ degradeBy 0.7
-    $ (|* gain (range 0.25 0.35 (fast 31 rand)))
+    $ (|* gain (range 0.21 0.35 (fast 31 (rand*rand))))
     $ s "frog"
-    # theta (range 0.4 0.55 (fast 17 $ (rand*rand)))
+    # theta (range 0.4 0.5 (fast 17 $ rand))
     # room 0.01
+    # scReverb ((*0.2) <$> cF 0 "groundNoise")
     # gain (cF 0 "forest")
   -- higurashi
   d4
@@ -137,6 +139,7 @@ do
     # theta (range (0.2) (0) (fast 15 $ rand))
     # phi (range (-0.5) (0.5) (fast 7 $ rand))
     # freeverb 0.3 # size 0.7
+    # scReverb ((*0.4) <$> cF 0 "groundNoise")
     # gain (cF 0 "forest")
   -- insects
   d2
@@ -150,6 +153,7 @@ do
     # lpf 3500
     # theta (range (-0.4) (-0.8) (fast 13 $ rand))
     # freeverb 0.1
+    # scReverb ((*0.1) <$> cF 0 "groundNoise")
     # gain (cF 0 "forest")
   -- another insects
   d1
@@ -163,4 +167,5 @@ do
     # real 0.6
     # theta (range 0.5 0.75 (fast 3 $ rand)) # phi (0.3)
     # freeverb 0.1
+    # scReverb ((*0.2) <$> cF 0 "groundNoise")
     # gain (cF 0 "forest")
