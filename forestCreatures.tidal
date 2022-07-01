@@ -151,7 +151,7 @@ do
     $ someCyclesBy 0.6 (|* gain 0)
     $ fast 5
     $ sometimesBy 0.2 (|* gain 0)
-    $ (|* gain (range 0.65 0.95 sine))
+    $ (|* gain (range 0.6 0.85 sine))
     $ s "insects"
     # n "b6"
     # lpf 3500
@@ -163,7 +163,7 @@ do
   d1
     $ someCyclesBy 0.2 (|* gain 0)
     $ sometimesBy 0.4 (|* gain 0)
-    $ (|* gain (range 0.65 0.73 (slow 2 $ cosine)))
+    $ (|* gain (range 0.55 0.65 (slow 2 $ cosine)))
     $ s "~ [SinOscSynthBend SinOscSynthBend ~!4]*3 ~"
     # sustain "~ [0.2 0.2 0.2!4]*3 ~"
     # n "~ [b9 ds9 ~!4]*3 ~"
