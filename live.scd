@@ -1,8 +1,8 @@
 (
 SynthDef("sine", {
-	arg freq = 440, amp = 0.2, parFreq=0, pan2Freq=0,
+	arg freq = 440, amp = 0.2, parFreq=0, pan2Freq=0, pan=0,
 	vibratoFreq=3, vibratoDepth=0, actave=1, reverb=0, ice=0;
-	var sig, out=0, chain, in, z, y, oct;
+	var sig, out=0, chain, in, z, y, oct, left, right;
 	sig = SinOsc.ar(actave*freq*(1+((LFPar.ar(vibratoFreq)+1)*(vibratoDepth/50))), 0, amp);
 	// tremoro
 	sig = if(
@@ -19,6 +19,14 @@ SynthDef("sine", {
 		pan2Freq>0.1,
 		Pan2.ar(sig, LFPar.ar(pan2Freq)),
 		Pan2.ar(sig, LFPar.ar(pan2Freq)*pan2Freq*10)
+	);
+	// fixed panning
+	right=sig;
+	left=sig;
+	sig = if(
+		pan2Freq==0,
+		sig=NumChannels.ar([left*(1-pan)/2, right*(1+pan)/2], 2),
+		sig
 	);
 	// reverb
 	z = DelayN.ar(sig, 0.048);
@@ -40,7 +48,7 @@ SynthDef("sunsetForest", {
 	a=LPF.ar(a,7800);
 	a=HPF.ar(a,1500-(groundNoise*1400));
 	Out.ar(out, amp * a * 5);
-}, [30, 5]).add;
+}, [30, 1]).add;
 
 SynthDef(\rain, {
 	arg amp=1;
@@ -55,7 +63,7 @@ SynthDef(\rain, {
 )
 
 s = Synth("sunsetForest", [\amp, 0, \groundNoise, 0]);
-s.set(\amp, 2.0);
+s.set(\amp, 2.5);
 s.set(\amp, 0);
 s.set(\groundNoise, 0);
 s.free;
@@ -65,7 +73,9 @@ r.set(\amp, 1);
 r.set(\amp, 0);
 r.free;
 
-// livecoding
+a = Synth("sine", [\freq, 570.609/4, \amp, 0, \parFreq, 1.5, \pan2Freq, 0, \pan, 0.7, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.6]);
+a.set(\amp, 0.05);
+
 (
 a = Synth("sine", [\freq, 570.609/4, \amp, 0, \parFreq, 1, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.6]);
 b = Synth("sine", [\freq, 640.487/4, \amp, 0, \parFreq, 0, \pan2Freq, 1, \vibratoDepth, 0.3, \vibratoFreq, 3, \actave, 1, \reverb, 0.4]);
