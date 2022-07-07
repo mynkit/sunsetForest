@@ -14,7 +14,7 @@ SuperDirt.start;
 
 (
 Server.default.options.inDevice_(ServerOptions.inDevices[0]);
-Server.default.options.outDevice_("Soundflower (2ch)");
+Server.default.options.outDevice_("Background Music");
 Server.default.reboot;
 SuperDirt.start;
 )
