@@ -2,8 +2,6 @@ bpm = 80
 
 setcps (bpm/60/4)
 
-("1 0 1"::Pattern Int)*("1 0 1"::Pattern Int)
-
 do
   setF "forest" 0
   setF "groundNoise" 0
@@ -137,7 +135,7 @@ do
     # n (wchoose [(49, 0.7), (44, 0.3)])
     # sustain (wchoose [(0.2, 0.2), (0.09, 0.8)])
     # accelerate (wchoose [(7, 0.2), ((-8), 0.8)])
-    # hpf (wchoose [(6900, 0.2), ((6000), 0.8)])
+    # hpf (wchoose [(8000, 0.2), ((6000), 0.8)])
     # shape (wchoose [(0, 0.2), ((0), 0.8)])
     # real 0.5
     # theta (range (0.2) (0) (fast 15 $ rand))
